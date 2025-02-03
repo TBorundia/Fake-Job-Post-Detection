@@ -1,61 +1,57 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import ValidateInput from './ValidateInput'
-// // import './App.css'
+// import React from "react";
+// import { BrowserRouter, Routes, Route } from "react-router-dom";
+// import {
+//   SignIn,
+//   SignedIn,
+//   SignedOut,
+//   SignInButton,
+//   UserButton,
+// } from "@clerk/clerk-react";
+// import ProtectedRoute from "./routes/ProtectedRoute";
 
-// function App() {
-//   const [count, setCount] = useState(0)
-
+// export default function App() {
 //   return (
-//     <>
-//       <ValidateInput />
-//     </>
-//   )
+//     <BrowserRouter>
+//       <header className="header">
+//         {/* Show Sign-In button for signed-out users */}
+//         <SignedOut>
+//           <SignInButton mode="modal" />
+//         </SignedOut>
+
+//         {/* Show User Profile button for signed-in users */}
+//         <SignedIn>
+//           <UserButton />
+//         </SignedIn>
+//       </header>
+
+//       <Routes>
+//         {/* Public Route */}
+//         <Route path="/" element={<h1>Welcome to the Home Page!</h1>} />
+
+//         {/* Protected Route */}
+//         <Route
+//           path="/dashboard"
+//           element={
+//             <ProtectedRoute>
+//               <h1>Welcome to the Dashboard!</h1>
+//             </ProtectedRoute>
+//           }
+//         />
+//       </Routes>
+//     </BrowserRouter>
+//   );
 // }
 
-// export default App
 
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import {
-  SignIn,
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from "@clerk/clerk-react";
-import ProtectedRoute from "./routes/ProtectedRoute";
+import CompleteBackend from "./CompleteBackend";
 
-export default function App() {
+function App() {
   return (
-    <BrowserRouter>
-      <header className="header">
-        {/* Show Sign-In button for signed-out users */}
-        <SignedOut>
-          <SignInButton mode="modal" />
-        </SignedOut>
-
-        {/* Show User Profile button for signed-in users */}
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-      </header>
-
-      <Routes>
-        {/* Public Route */}
-        <Route path="/" element={<h1>Welcome to the Home Page!</h1>} />
-
-        {/* Protected Route */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <h1>Welcome to the Dashboard!</h1>
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <div className="app">
+      <CompleteBackend />
+    </div>
   );
 }
+
+export default App;
