@@ -1,57 +1,92 @@
-// import React from "react";
-// import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import {
-//   SignIn,
-//   SignedIn,
-//   SignedOut,
-//   SignInButton,
-//   UserButton,
-// } from "@clerk/clerk-react";
-// import ProtectedRoute from "./routes/ProtectedRoute";
+/* eslint-disable no-unused-vars */
+// import { useState } from 'react'
+// import reactLogo from './assets/react.svg'
+// import viteLogo from '/vite.svg'
+// import ValidateInput from './ValidateInput'
+// // import './App.css'
 
-// export default function App() {
+// function App() {
+//   const [count, setCount] = useState(0)
+
 //   return (
-//     <BrowserRouter>
-//       <header className="header">
-//         {/* Show Sign-In button for signed-out users */}
-//         <SignedOut>
-//           <SignInButton mode="modal" />
-//         </SignedOut>
-
-//         {/* Show User Profile button for signed-in users */}
-//         <SignedIn>
-//           <UserButton />
-//         </SignedIn>
-//       </header>
-
-//       <Routes>
-//         {/* Public Route */}
-//         <Route path="/" element={<h1>Welcome to the Home Page!</h1>} />
-
-//         {/* Protected Route */}
-//         <Route
-//           path="/dashboard"
-//           element={
-//             <ProtectedRoute>
-//               <h1>Welcome to the Dashboard!</h1>
-//             </ProtectedRoute>
-//           }
-//         />
-//       </Routes>
-//     </BrowserRouter>
-//   );
+//     <>
+//       <ValidateInput />
+//     </>
+//   )
 // }
+
+// export default App
+
+// 
+
+
 
 
 import React from "react";
-import CompleteBackend from "./CompleteBackend";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { SignIn, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import "./styles/App.css"; // Import the CSS file
+import Home from "./components/Home";
 
-function App() {
+export default function App() {
   return (
-    <div className="app">
-      <CompleteBackend />
-    </div>
+    <BrowserRouter>
+      {/* Navbar */}
+      <nav className="navbar">
+        {/* Logo on the left */}
+        <div className="logo">
+          <Link to="/">FakeJobDetect</Link>
+        </div>
+
+        {/* Navigation links on the right */}
+        <div className="nav-links">
+          <Link to="/" className="nav-link">Home</Link>
+          <Link to="/aboutus" className="nav-link">About Us</Link>
+          <Link to="/admin" className="nav-link">Admin</Link>
+          <Link to="/contactus" className="nav-link">Contact Us</Link>
+        </div>
+
+        {/* Authentication section */}
+        <div className="auth-section">
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="get-started-button">SignIn</button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
+      </nav>
+
+      {/* Routes */}
+      <Routes>
+        <Route path="/" element={<Home></Home>} />
+        <Route path="/aboutus" element={<h1>About Us</h1>} />
+        <Route path="/admin" element={<h1>Admin Panel</h1>} />
+        <Route path="/contactus" element={<h1>Contact Us</h1>} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <h1>Welcome to the Dashboard!</h1>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
+// import React from "react";
+// import CompleteBackend from "./CompleteBackend";
 
-export default App;
+// function App() {
+//   return (
+//     <div className="app">
+//       <CompleteBackend />
+//     </div>
+//   );
+// }
+
+// export default App;
