@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from .chatbot import initialize_chatbot, get_chatbot_response
 import ast  # To safely convert string to list
+from playwright.sync_api import sync_playwright
 
 class JobScraper:
     def __init__(self):
@@ -70,9 +71,9 @@ class JobScraper:
                 elif 'internshala.com' in url:
                     job_data.update(self._scrape_internshala(soup))
                 elif 'naukri.com' in url:
-                    job_data.update(self._scrape_naukri(soup))
+                    job_data.update(self._scrape_naukri(url))
                 elif 'unstop.com' in url:
-                    job_data.update(self._scrape_unstop(soup))
+                    job_data.update(self._scrape_naukri(url))
             elif post_text:
                 job_data.update(self._analyze_post_text(post_text))
 
@@ -84,9 +85,6 @@ class JobScraper:
         except Exception as e:
             print(f"Error scraping job: {str(e)}")
             return None
-
-
-
 
     def _scrape_internshala(self, soup):
         data = {}
@@ -143,10 +141,6 @@ class JobScraper:
         except Exception as e:
             print(f"Error in Internshala scraping: {str(e)}")
         return data
-    
-
-
-
     def _analyze_post_text(self, post_text):
         """Analyze plain text job posting using the chatbot"""
         data = {}
@@ -195,9 +189,6 @@ class JobScraper:
         return data
 
 
-
-    
-
     def _enrich_job_data(self, job_data):
         """Enrich job data with intelligent parsing"""
         # If profile is empty but we have job title, use it as profile
@@ -238,3 +229,121 @@ class JobScraper:
         for key in job_data:
             if job_data[key] is None:
                 job_data[key] = ''
+
+
+
+    def _scrape_naukri(self, url):
+        data = {}
+        try:
+            with sync_playwright() as pw:
+                # Launch the browser in headless mode
+                browser = pw.firefox.launch(headless=True)
+                page = browser.new_page()
+                
+                # Navigate to the URL
+                page.goto(url, timeout=60000)  # Increased timeout for dynamic loading
+                
+                # Wait for the page to load completely
+                page.wait_for_selector('body', timeout=10000)
+                
+                # Extract the entire page content
+                content = page.content()
+                
+                # Close the browser
+                browser.close()
+                
+                # Clean the content: Remove HTML tags, extra spaces, and newlines
+                cleaned_content = self._clean_html_content(content)
+                
+                # Pass the cleaned content to _analyze_naukri_content for restructuring
+                data = self._analyze_naukri_content(cleaned_content)
+        
+        except Exception as e:
+            print(f"Error scraping Naukri: {str(e)}")
+        
+        return data
+
+    def _clean_html_content(self, html_content):
+        """
+        Clean HTML content by removing tags, extra spaces, and newline characters.
+        """
+        try:
+            # Use BeautifulSoup to parse the HTML and extract text
+            soup = BeautifulSoup(html_content, 'html.parser')
+            text = soup.get_text(separator=' ')  # Extract text with spaces as separators
+            
+            # Remove extra spaces and newlines using regex
+            cleaned_text = re.sub(r'\s+', ' ', text).strip()  # Replace multiple spaces/newlines with a single space
+            
+            return cleaned_text
+        except Exception as e:
+            print(f"Error cleaning HTML content: {str(e)}")
+            return html_content  # Return original content if cleaning fails
+
+
+
+
+    
+
+    def _analyze_naukri_content(self, post_text):
+        """Analyze plain text job posting using the chatbot"""
+        data = {}
+        try:
+            # Get the extracted data from the chatbot
+            extracted_data = get_chatbot_response(self.chatbot, post_text)
+            print("Chatbot Response:", extracted_data)  # Debugging: Print the raw response
+
+            # Use regex to find the array in the chatbot response
+            array_pattern = re.compile(r'\[.*\]')
+            array_match = array_pattern.search(extracted_data)
+            
+            if array_match:
+                array_content = array_match.group(0)
+                # Safely evaluate the array string into a Python list
+                extracted_values = ast.literal_eval(array_content)
+                
+                # Predefined keys in the correct order
+                extracted_keys = [
+                    "Job Title", "Job Location", "Department", "Range of Salary",
+                    "Profile", "Job Description", "Requirements", "Job Benefits",
+                    "Telecommunication", "Company Logo", "Type of Employment",
+                    "Experience", "Qualification", "Type of Industry", "Operations"
+                ]
+
+                # Handle missing or extra values
+                while len(extracted_values) < len(extracted_keys):
+                    extracted_values.append("")  # Fill missing fields with empty strings
+                extracted_values = extracted_values[:len(extracted_keys)]  # Trim extra values if any
+
+                # Convert Telecommunication & Company Logo to 0 or 1
+                extracted_values[8] = "1" if str(extracted_values[8]).lower() in ["yes", "true", "1"] else "0"
+                extracted_values[9] = "1" if str(extracted_values[9]).lower() in ["yes", "true", "1"] else "0"
+
+                # Create a structured dictionary
+                extracted_dict = {extracted_keys[i]: extracted_values[i] for i in range(len(extracted_keys))}
+
+                # Map extracted data to structured output
+                data = {
+                    'job_title': extracted_dict["Job Title"],
+                    'job_location': extracted_dict["Job Location"],
+                    'department': extracted_dict["Department"],
+                    'range_of_salary': extracted_dict["Range of Salary"].replace("Salary range: ", ""),  # Clean salary range
+                    'profile': extracted_dict["Profile"],
+                    'job_description': extracted_dict["Job Description"],
+                    'requirements': extracted_dict["Requirements"],
+                    'job_benefits': extracted_dict["Job Benefits"],
+                    'telecommunication': int(extracted_dict["Telecommunication"]),
+                    'company_logo': int(extracted_dict["Company Logo"]),
+                    'type_of_employment': extracted_dict["Type of Employment"],
+                    'experience': extracted_dict["Experience"],
+                    'qualification': extracted_dict["Qualification"],
+                    'type_of_industry': extracted_dict["Type of Industry"],
+                    'operations': extracted_dict["Operations"]
+                }
+            else:
+                print("No array found in the chatbot response.")
+
+        except Exception as e:
+            print(f"Error in post text analysis: {str(e)}")
+        
+        return data
