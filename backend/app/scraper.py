@@ -141,52 +141,78 @@ class JobScraper:
         except Exception as e:
             print(f"Error in Internshala scraping: {str(e)}")
         return data
+    
+
     def _analyze_post_text(self, post_text):
         """Analyze plain text job posting using the chatbot"""
         data = {}
         try:
             # Get the extracted data from the chatbot
             extracted_data = get_chatbot_response(self.chatbot, post_text)
-            print(extracted_data)
+            print("Chatbot Response:", extracted_data)  # Debugging: Print raw response
 
-            # Safely convert the string representation of the list into an actual list
-            extracted_values = ast.literal_eval(extracted_data.strip())
+            # Check if the response contains a valid list (square brackets)
+            if "[" in extracted_data and "]" in extracted_data:
+                try:
+                    # Extract the JSON-like array using regex
+                    array_pattern = re.search(r'\[.*\]', extracted_data, re.DOTALL)
+                    if array_pattern:
+                        array_content = array_pattern.group(0)  # Extract matched list
+                        extracted_values = json.loads(array_content)  # Convert to Python list
+                    else:
+                        print("No valid list format found in chatbot response.")
+                        return {}
 
-            # Define keys for structured response (following your order)
-            extracted_keys = [
-                "Job Title", "Job Location", "Department", "Range of Salary",
-                "Profile", "Job Description", "Requirements", "Job Benefits",
-                "Telecommunication", "Company Logo", "Type of Employment",
-                "Experience", "Qualification", "Type of Industry", "Operations"
-            ]
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding extracted data: {str(e)}")
+                    return {}
 
-            # Ensure 'Telecommunication' & 'Company Logo' are 0 or 1
-            extracted_values[8] = "1" if str(extracted_values[8]).lower() in ["yes", "true", "1"] else "0"
-            extracted_values[9] = "1" if str(extracted_values[9]).lower() in ["yes", "true", "1"] else "0"
+                # Predefined keys in correct order
+                extracted_keys = [
+                    "Job Title", "Job Location", "Department", "Range of Salary",
+                    "Profile", "Job Description", "Requirements", "Job Benefits",
+                    "Telecommunication", "Company Logo", "Type of Employment",
+                    "Experience", "Qualification", "Type of Industry", "Operations"
+                ]
 
-            # Create a dictionary from extracted data
-            extracted_dict = {extracted_keys[i]: extracted_values[i] for i in range(len(extracted_keys))}
+                # Ensure values match keys
+                while len(extracted_values) < len(extracted_keys):
+                    extracted_values.append("")  # Fill missing fields
+                extracted_values = extracted_values[:len(extracted_keys)]  # Trim extra values
 
-            # Map the extracted data to the job_data dictionary
-            data['job_title'] = extracted_dict.get("Job Title", "")
-            data['job_location'] = extracted_dict.get("Job Location", "")
-            data['department'] = extracted_dict.get("Department", "")
-            data['range_of_salary'] = extracted_dict.get("Range of Salary", "")
-            data['profile'] = extracted_dict.get("Profile", "")
-            data['job_description'] = extracted_dict.get("Job Description", "")
-            data['requirements'] = extracted_dict.get("Requirements", "")
-            data['job_benefits'] = extracted_dict.get("Job Benefits", "")
-            data['telecommunication'] = int(extracted_dict.get("Telecommunication", 0))
-            data['company_logo'] = int(extracted_dict.get("Company Logo", 0))
-            data['type_of_employment'] = extracted_dict.get("Type of Employment", "")
-            data['experience'] = extracted_dict.get("Experience", "")
-            data['qualification'] = extracted_dict.get("Qualification", "")
-            data['type_of_industry'] = extracted_dict.get("Type of Industry", "")
-            data['operations'] = extracted_dict.get("Operations", "")
+                # Convert "yes/no" fields to binary
+                extracted_values[8] = "1" if str(extracted_values[8]).lower() in ["yes", "true", "1"] else "0"
+                extracted_values[9] = "1" if str(extracted_values[9]).lower() in ["yes", "true", "1"] else "0"
+
+                # Create structured dictionary
+                extracted_dict = {extracted_keys[i]: extracted_values[i] for i in range(len(extracted_keys))}
+
+                # Map extracted data to structured output
+                data = {
+                    'job_title': extracted_dict["Job Title"],
+                    'job_location': extracted_dict["Job Location"],
+                    'department': extracted_dict["Department"],
+                    'range_of_salary': extracted_dict["Range of Salary"].replace("Salary range: ", ""),
+                    'profile': extracted_dict["Profile"],
+                    'job_description': extracted_dict["Job Description"],
+                    'requirements': extracted_dict["Requirements"],
+                    'job_benefits': extracted_dict["Job Benefits"],
+                    'telecommunication': int(extracted_dict["Telecommunication"]),
+                    'company_logo': int(extracted_dict["Company Logo"]),
+                    'type_of_employment': extracted_dict["Type of Employment"],
+                    'experience': extracted_dict["Experience"],
+                    'qualification': extracted_dict["Qualification"],
+                    'type_of_industry': extracted_dict["Type of Industry"],
+                    'operations': extracted_dict["Operations"]
+                }
+            else:
+                print("No square brackets found in chatbot response.")
 
         except Exception as e:
             print(f"Error in post text analysis: {str(e)}")
+
         return data
+
 
 
     def _enrich_job_data(self, job_data):
@@ -259,10 +285,12 @@ class JobScraper:
                 data = self._analyze_naukri_content(cleaned_content)
         
         except Exception as e:
-            print(f"Error scraping Naukri: {str(e)}")
+            print(f"Error scraping Website: {str(e)}")
         
         return data
 
+
+    
     def _clean_html_content(self, html_content):
         """
         Clean HTML content by removing tags, extra spaces, and newline characters.
@@ -281,10 +309,6 @@ class JobScraper:
             return html_content  # Return original content if cleaning fails
 
 
-
-
-    
-
     def _analyze_naukri_content(self, post_text):
         """Analyze plain text job posting using the chatbot"""
         data = {}
@@ -293,57 +317,66 @@ class JobScraper:
             extracted_data = get_chatbot_response(self.chatbot, post_text)
             print("Chatbot Response:", extracted_data)  # Debugging: Print the raw response
 
-            # Use regex to find the array in the chatbot response
-            array_pattern = re.compile(r'\[.*\]')
-            array_match = array_pattern.search(extracted_data)
-            
-            if array_match:
-                array_content = array_match.group(0)
-                # Safely evaluate the array string into a Python list
-                extracted_values = ast.literal_eval(array_content)
+            # Check if a square bracket exists in the response
+            if "[" in extracted_data and "]" in extracted_data:
+                # Use regex to find the array in the chatbot response
+                array_pattern = re.compile(r'\[.*\]')
+                array_match = array_pattern.search(extracted_data)
                 
-                # Predefined keys in the correct order
-                extracted_keys = [
-                    "Job Title", "Job Location", "Department", "Range of Salary",
-                    "Profile", "Job Description", "Requirements", "Job Benefits",
-                    "Telecommunication", "Company Logo", "Type of Employment",
-                    "Experience", "Qualification", "Type of Industry", "Operations"
-                ]
+                if array_match:
+                    array_content = array_match.group(0)
+                    
+                    try:
+                        # Safely evaluate the array string into a Python list
+                        extracted_values = ast.literal_eval(array_content)
 
-                # Handle missing or extra values
-                while len(extracted_values) < len(extracted_keys):
-                    extracted_values.append("")  # Fill missing fields with empty strings
-                extracted_values = extracted_values[:len(extracted_keys)]  # Trim extra values if any
+                        # Predefined keys in the correct order
+                        extracted_keys = [
+                            "Job Title", "Job Location", "Department", "Range of Salary",
+                            "Profile", "Job Description", "Requirements", "Job Benefits",
+                            "Telecommunication", "Company Logo", "Type of Employment",
+                            "Experience", "Qualification", "Type of Industry", "Operations"
+                        ]
 
-                # Convert Telecommunication & Company Logo to 0 or 1
-                extracted_values[8] = "1" if str(extracted_values[8]).lower() in ["yes", "true", "1"] else "0"
-                extracted_values[9] = "1" if str(extracted_values[9]).lower() in ["yes", "true", "1"] else "0"
+                        # Handle missing or extra values
+                        while len(extracted_values) < len(extracted_keys):
+                            extracted_values.append("")  # Fill missing fields with empty strings
+                        extracted_values = extracted_values[:len(extracted_keys)]  # Trim extra values if any
 
-                # Create a structured dictionary
-                extracted_dict = {extracted_keys[i]: extracted_values[i] for i in range(len(extracted_keys))}
+                        # Convert Telecommunication & Company Logo to 0 or 1
+                        extracted_values[8] = "1" if str(extracted_values[8]).lower() in ["yes", "true", "1"] else "0"
+                        extracted_values[9] = "1" if str(extracted_values[9]).lower() in ["yes", "true", "1"] else "0"
 
-                # Map extracted data to structured output
-                data = {
-                    'job_title': extracted_dict["Job Title"],
-                    'job_location': extracted_dict["Job Location"],
-                    'department': extracted_dict["Department"],
-                    'range_of_salary': extracted_dict["Range of Salary"].replace("Salary range: ", ""),  # Clean salary range
-                    'profile': extracted_dict["Profile"],
-                    'job_description': extracted_dict["Job Description"],
-                    'requirements': extracted_dict["Requirements"],
-                    'job_benefits': extracted_dict["Job Benefits"],
-                    'telecommunication': int(extracted_dict["Telecommunication"]),
-                    'company_logo': int(extracted_dict["Company Logo"]),
-                    'type_of_employment': extracted_dict["Type of Employment"],
-                    'experience': extracted_dict["Experience"],
-                    'qualification': extracted_dict["Qualification"],
-                    'type_of_industry': extracted_dict["Type of Industry"],
-                    'operations': extracted_dict["Operations"]
-                }
+                        # Create a structured dictionary
+                        extracted_dict = {extracted_keys[i]: extracted_values[i] for i in range(len(extracted_keys))}
+
+                        # Map extracted data to structured output
+                        data = {
+                            'job_title': extracted_dict["Job Title"],
+                            'job_location': extracted_dict["Job Location"],
+                            'department': extracted_dict["Department"],
+                            'range_of_salary': extracted_dict["Range of Salary"].replace("Salary range: ", ""),  # Clean salary range
+                            'profile': extracted_dict["Profile"],
+                            'job_description': extracted_dict["Job Description"],
+                            'requirements': extracted_dict["Requirements"],
+                            'job_benefits': extracted_dict["Job Benefits"],
+                            'telecommunication': int(extracted_dict["Telecommunication"]),
+                            'company_logo': int(extracted_dict["Company Logo"]),
+                            'type_of_employment': extracted_dict["Type of Employment"],
+                            'experience': extracted_dict["Experience"],
+                            'qualification': extracted_dict["Qualification"],
+                            'type_of_industry': extracted_dict["Type of Industry"],
+                            'operations': extracted_dict["Operations"]
+                        }
+                    except Exception as e:
+                        print(f"Error parsing extracted data: {str(e)}")
+                        data = {}  # Ensure data is empty if parsing fails
+                else:
+                    print("No valid array found in the chatbot response.")
             else:
-                print("No array found in the chatbot response.")
+                print("No square brackets found in the chatbot response.")
 
         except Exception as e:
             print(f"Error in post text analysis: {str(e)}")
-        
+
         return data
