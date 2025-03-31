@@ -67,9 +67,9 @@ class JobScraper:
                 soup = BeautifulSoup(response.text, 'html.parser')
                 
                 if 'linkedin.com' in url:
-                    job_data.update(self._scrape_linkedin(soup))
+                    job_data.update(self._scrape_naukri(url))
                 elif 'internshala.com' in url:
-                    job_data.update(self._scrape_internshala(soup))
+                    job_data.update(self._scrape_naukri(url))
                 elif 'naukri.com' in url:
                     job_data.update(self._scrape_naukri(url))
                 elif 'unstop.com' in url:
