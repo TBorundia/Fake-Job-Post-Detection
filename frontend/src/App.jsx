@@ -1,26 +1,5 @@
 /* eslint-disable no-unused-vars */
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import ValidateInput from './ValidateInput'
-// // import './App.css'
-
-// function App() {
-//   const [count, setCount] = useState(0)
-
-//   return (
-//     <>
-//       <ValidateInput />
-//     </>
-//   )
-// }
-
-// export default App
-
-// 
-
-
-import React,{useState} from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import {
   SignIn,
@@ -30,7 +9,7 @@ import {
   UserButton,
 } from "@clerk/clerk-react";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import "./styles/App.css"; // Import the CSS file
+import "./styles/App.css";
 import Home from "./components/Home";
 import CompleteBackend from "./CompleteBackend";
 import AboutUs from "./AboutUs";
@@ -39,33 +18,47 @@ import JobResult from "./components/JobResult";
 
 export default function App() {
   const [theme, setTheme] = useState("Light");
+  
+  // Apply theme when component mounts and when theme changes
+  useEffect(() => {
+    if (theme === "Dark") {
+      document.body.classList.add("dark-theme");
+      document.body.classList.remove("light-theme");
+    } else {
+      document.body.classList.add("light-theme");
+      document.body.classList.remove("dark-theme");
+    }
+  }, [theme]);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "Light" ? "Dark" : "Light"));
   };
+  
   return (
-    <BrowserRouter >
+    <BrowserRouter>
       {/* Navbar */}
       <nav className="navbar">
         {/* Logo on the left */}
         <div className="logo">
           <Link to="/">FakeJobDetect</Link>
         </div>
-
+        
         {/* Navigation links on the right */}
-        <div className="nav-links" >
+        <div className="nav-links">
           <Link to="/" className="nav-link">Home</Link>
           <Link to="/aboutus" className="nav-link">About Us</Link>
           <SignedIn>
-          <Link to="/userdashboard" className="nav-link">User Dashboard</Link>
+            <Link to="/userdashboard" className="nav-link">User Dashboard</Link>
           </SignedIn>
           {/* Show "Analyze Post" only when user is signed in */}
           <SignedIn>
             <Link to="/analyzepost" className="nav-link">Analyze Post</Link>
           </SignedIn>
-          <Link onClick={toggleTheme} className="nav-link-dark-light">{theme}</Link>
+          <button onClick={toggleTheme} className="theme-toggle-btn">
+            {theme === "Light" ? "Dark" : "Light"}
+          </button>
         </div>
-
+        
         {/* Authentication section */}
         <div className="auth-section">
           <SignedOut>
@@ -78,7 +71,7 @@ export default function App() {
           </SignedIn>
         </div>
       </nav>
-
+      
       {/* Routes */}
       <Routes>
         <Route path="/" element={<Home />} />
@@ -106,16 +99,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-
-// import React from "react";
-// import CompleteBackend from "./CompleteBackend";
-
-// function App() {
-//   return (
-//     <div className="app">
-//       <CompleteBackend />
-//     </div>
-//   );
-// }
-
-// export default App;

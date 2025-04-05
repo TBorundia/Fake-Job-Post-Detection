@@ -3,42 +3,54 @@
   margin: 0 auto;
   padding: 20px;
   display: flex;
+  transition: background-color 0.3s ease;
 }
-.completeBackend img{
-  height:340px;
+
+.completeBackend img {
+  height: 340px;
   width: 550px;
   margin-top: -5rem;
 }
 
-/* .navbar {
-  background-color: #333;
-  color: white;
-  padding: 1rem;
-  margin-bottom: 2rem;
-} */
-
-/* .navbar h1 {
-  margin: 0;
-} */
- .header{
+.header {
   max-width: 600px;
   padding: 50px;
- }
- .header p{
+  transition: color 0.3s ease;
+}
+
+.header p {
   font-size: 16px;
- }
- .header h1{
+}
+
+.header h1 {
   font-size: 50px;
+  transition: color 0.3s ease;
+}
+
+.light-theme .header h1 {
+  color: #333;
+}
+
+.dark-theme .header h1 {
   color: #f5f5f5;
- }
+}
 
 .form-container {
-  background-color: #f5f5f5;
   padding: 20px;
   border-radius: 8px;
-  /* margin-top: 110px; */
-  width:500px;
+  width: 500px;
   height: 360px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.light-theme .form-container {
+  background-color: #f5f5f5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .form-container {
+  background-color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .form-group {
@@ -46,20 +58,39 @@
 }
 
 .form-group label {
-  color:rgb(30, 29, 29);
-  font-size: 25px;
   display: block;
   margin-bottom: 35px;
   font-weight: bold;
+  font-size: 25px;
+  transition: color 0.3s ease;
 }
 
-.form-group input,
-.form-group textarea {
+.light-theme .form-group label {
+  color: rgb(30, 29, 29);
+}
+
+.dark-theme .form-group label {
+  color: #e0e0e0;
+}
+
+.form-group input, .form-group textarea {
   width: 90%;
   padding: 8px;
-  border: 1px solid #ddd;
   border-radius: 15px;
   font-size: 16px;
+  transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+}
+
+.light-theme .form-group input, .light-theme .form-group textarea {
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #333;
+}
+
+.dark-theme .form-group input, .dark-theme .form-group textarea {
+  border: 1px solid #555;
+  background-color: #444;
+  color: #fff;
 }
 
 .form-group textarea {
@@ -67,38 +98,73 @@
 }
 
 .submit-button {
-  background-color: #646cff;
-  color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.light-theme .submit-button {
+  background-color: #646cff;
+  color: white;
+}
+
+.dark-theme .submit-button {
+  background-color: #747bff;
+  color: white;
 }
 
 .submit-button:hover {
-  background-color: #0056b3;
+  background-color: #535bf2;
 }
 
 .error-message {
-  background-color: #ffebee;
-  color: #c62828;
   padding: 10px;
   border-radius: 4px;
   margin: 10px 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.light-theme .error-message {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.dark-theme .error-message {
+  background-color: #4a0f0f;
+  color: #ff8a8a;
 }
 
 .loading-message {
   text-align: center;
   padding: 20px;
+  transition: color 0.3s ease;
+}
+
+.light-theme .loading-message {
   color: #666;
 }
 
+.dark-theme .loading-message {
+  color: #bbb;
+}
+
 .results-container {
-  background-color: white;
   padding: 20px;
   border-radius: 8px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.light-theme .results-container {
+  background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .results-container {
+  background-color: #2d2d2d;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .results-grid {
@@ -110,16 +176,66 @@
 
 .result-item {
   padding: 15px;
-  border: 1px solid #ddd;
   border-radius: 4px;
+  transition: border 0.3s ease;
+}
+
+.light-theme .result-item {
+  border: 1px solid #ddd;
+}
+
+.dark-theme .result-item {
+  border: 1px solid #444;
 }
 
 .result-item h3 {
   margin: 0 0 10px 0;
+  transition: color 0.3s ease;
+}
+
+.light-theme .result-item h3 {
   color: #333;
+}
+
+.dark-theme .result-item h3 {
+  color: #e0e0e0;
 }
 
 .result-item p {
   margin: 5px 0;
+  transition: color 0.3s ease;
+}
+
+.light-theme .result-item p {
   color: #666;
+}
+
+.dark-theme .result-item p {
+  color: #aaa;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .completeBackend {
+    flex-direction: column;
+  }
+  
+  .form-container {
+    width: 100%;
+    height: auto;
+  }
+  
+  .completeBackend img {
+    width: 100%;
+    height: auto;
+    margin-top: 0;
+  }
+  
+  .header {
+    padding: 20px;
+  }
+  
+  .header h1 {
+    font-size: 36px;
+  }
 }
