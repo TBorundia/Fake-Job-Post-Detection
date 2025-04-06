@@ -97,6 +97,49 @@
   min-height: 100px;
 }
 
+.platform-input{
+  margin-bottom: 10px;
+}
+
+.platform-input label{
+  font-size: 15px;
+  transition: color 0.3s ease;
+}
+
+/* Modified platform-input styles for dark-light theme */
+.platform-input input{
+  width: 70%;
+  padding: 8px;
+  border-radius: 15px;
+  transition: background-color 0.3s ease, color 0.3s ease, border 0.3s ease;
+}
+
+.light-theme .platform-input input {
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #333;
+}
+
+.dark-theme .platform-input input {
+  border: 1px solid #555;
+  background-color: #444;
+  color: #fff;
+}
+
+/* Optional focus state for better accessibility */
+.platform-input input:focus {
+  outline: none;
+  box-shadow: 0 0 3px black;
+}
+
+.light-theme .platform-input input:focus {
+  border-color: black;
+}
+
+.dark-theme .platform-input input:focus {
+  border-color: black;
+}
+
 .submit-button {
   padding: 10px 20px;
   border: none;

@@ -5,16 +5,18 @@ import axios from 'axios';
 const JobForm = ({ setJobData, setLoading, setError }) => {
   const [url, setUrl] = useState('');
   const [jobPost, setJobPost] = useState('');
+  const [showPlatformInput, setShowPlatformInput] = useState(false);
+  const [platform, setPlatform] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
     try {
       const response = await axios.post('http://localhost:5000/api/analyze', {
         url: url || null,
-        job_post: jobPost || null
+        job_post: jobPost || null,
+        platform: platform || null
       });
       setJobData(response.data);
     } catch (error) {
@@ -22,6 +24,10 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleTextareaClick = () => {
+    setShowPlatformInput(true);
   };
 
   return (
@@ -43,8 +49,21 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
             placeholder="Paste job posting content here"
             value={jobPost}
             onChange={(e) => setJobPost(e.target.value)}
+            onClick={handleTextareaClick}
           />
         </div>
+        {showPlatformInput && (
+          <div className='platform-input'>
+            <label htmlFor="platform">Job Platform: </label>
+            <input
+              id="platform"
+              type="text"
+              placeholder="Enter job platform (LinkedIn, Indeed, etc.)"
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value)}
+            />
+          </div>
+        )}
         <button type="submit" className="submit-button">
           Analyze Job
         </button>
