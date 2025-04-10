@@ -1,11 +1,10 @@
 services:
   - type: web
-    name: flask-playwright-api
-    env: python
-    buildCommand: |
-      pip install -r requirements.txt
-      python -m playwright install
-    startCommand: gunicorn run:app
+    name: fake-job-post-detection
+    env: docker
+    plan: free
+    dockerfilePath: Dockerfile
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.10
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    autoDeploy: true
