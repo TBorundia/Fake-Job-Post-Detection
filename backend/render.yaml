@@ -1,11 +1,11 @@
 services:
   - type: web
-    name: your-flask-api
+    name: flask-playwright-api
     env: python
     buildCommand: |
       pip install -r requirements.txt
       python -m playwright install
-    startCommand: gunicorn main:app
+    startCommand: gunicorn run:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.10
