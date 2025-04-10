@@ -23,7 +23,7 @@ def analyze_job():
 
         if not job_data:
             return jsonify({'error': 'Failed to extract job data'}), 400
-
+        print("Fraudulent value being returned:", job_data.get("fraudulent"))
         return jsonify(job_data)
 
     except Exception as e:

@@ -32,14 +32,15 @@ def get_chatbot_response(client, job_post):
 13. Qualification
 14. Type of Industry
 15. Operations
+16. Fraudulent (yes or no)
 
 Job Post:
 {job_post}
 
 Return only the array of extracted values, with empty strings for missing values. The output must be formatted exactly as follows:
 
-["Job Title", "Job Location", "Department", "Range of Salary", "Profile", "Job Description", "Requirements", "Job Benefits", "Telecommunication", "Company Logo", "Type of Employment", "Experience", "Qualification", "Type of Industry", "Operations"]
-"""
+["Job Title", "Job Location", "Department", "Range of Salary", "Profile", "Job Description", "Requirements", "Job Benefits", "Telecommunication", "Company Logo", "Type of Employment", "Experience", "Qualification", "Type of Industry", "Operations", "Fraudulent"]
+and the Fraudulent attribute you have to determine the job post is fake or not , if job-post is fake return yes else  if job-post is genuine the output will be no"""
     try:
         completion = client.chat.completions.create(
             extra_headers={

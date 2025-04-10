@@ -27,7 +27,7 @@ const JobResult = () => {
     { key: 'qualification', label: 'Qualification' },
     { key: 'type_of_industry', label: 'Industry' },
     { key: 'operations', label: 'Operations' },
-    { key: 'fraudulent', label: 'Validity' }
+    { key: 'fraudulent', label: 'Fraudalent' }
   ];
 
   const getValue = (key) => {

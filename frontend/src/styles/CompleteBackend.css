@@ -282,3 +282,12 @@
     font-size: 36px;
   }
 }
+
+
+.upload-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #007bff;
+  margin-top: 10px;
+}
