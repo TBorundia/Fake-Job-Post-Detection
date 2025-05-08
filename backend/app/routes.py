@@ -49,15 +49,16 @@ def analyze_job():
     experience= data.get('experience')
     education= data.get('education')
     employment= data.get('employment')
+    hasQuestion= data.get('hasQuestion')
 
     if not url and not job_post:
         return jsonify({'error': 'Please provide either a URL or job post'}), 400
 
     try:
         if url:
-            job_data = scraper.scrape_job(url=url, has_logo=has_logo , experience=experience, education=education, employment=employment)  
+            job_data = scraper.scrape_job(url=url, has_logo=has_logo , experience=experience, education=education, employment=employment , hasQuestion=hasQuestion)  
         else:
-            job_data = scraper.scrape_job(post_text=job_post, has_logo=has_logo, experience=experience, education=education, employment=employment)  
+            job_data = scraper.scrape_job(post_text=job_post, has_logo=has_logo, experience=experience, education=education, employment=employment , hasQuestion=hasQuestion)  
 
         if not job_data:
             return jsonify({'error': 'Failed to extract job data'}), 400

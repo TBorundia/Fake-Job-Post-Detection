@@ -12,6 +12,7 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
   const [experience, setExperience] = useState("");
   const [education, setEducation] = useState("");
   const [employment, setEmployment] = useState("");
+  const [hasQuestion, setHasQuestion] = useState(false); // Toggle for company logo
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,9 +27,12 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
         experience: experience || null,
         education: education || null,
         employment: employment || null,
-      });
+        hasQuestion: hasQuestion || null,
+      }
+    );
     
       setJobData(response.data);
+      console.log(response.data)
     } catch (error) {
       setError(
         error.response?.data?.error ||
@@ -245,6 +249,22 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
                 {type}
               </option>
             ))}
+          </select>
+        </div>
+
+        <div>
+        <label htmlFor="employment" style={styles.label}>
+        Are there any question given in the job post?
+          </label>
+          <select
+            id="hasQuestion"
+            value={hasQuestion}
+            onChange={(e) => setHasQuestion(e.target.value)}
+            style={styles.select}
+          >
+            <option value={true}>yes</option>
+            <option value={false}>No</option>
+            
           </select>
         </div>
 

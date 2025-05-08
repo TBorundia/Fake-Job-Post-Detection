@@ -14,16 +14,76 @@ class JobScraper:
         }
         self.chatbot = initialize_chatbot()
 
+    @staticmethod
+    def parse_salary(salary_text):
+        if not salary_text or not isinstance(salary_text, str):
+            return 0
+            
+        dollar_rate = 83
+        numbers = []
+        current_number = ""
+        i = 0
+        n = len(salary_text)
+        
+        print(f"Debug - Original salary text: '{salary_text}'")
+        
+        while i < n:
+            if salary_text[i].isdigit() or salary_text[i] == ',':
+                current_number += salary_text[i]
+                i += 1
+            else:
+                # Check for separator ('-' or 'to')
+                if (salary_text[i] == '-' or 
+                    (i+2 < n and salary_text[i:i+2].lower() == 'to')):
+                    
+                    if current_number:
+                        numbers.append(current_number.replace(',', ''))
+                        current_number = ""
+                    
+                    # Skip the separator
+                    if salary_text[i] == '-':
+                        i += 1
+                    else:  # 'to'
+                        i += 2
+                else:
+                    if current_number:
+                        numbers.append(current_number.replace(',', ''))
+                        current_number = ""
+                    i += 1
+        
+        # Add the last number if exists
+        if current_number:
+            numbers.append(current_number.replace(',', ''))
+        
+        print(f"Debug - Extracted numbers: {numbers}")
+        
+        try:
+            if len(numbers) >= 2:
+                # Calculate difference between max and min in USD
+                salary = (int(numbers[-1]) - int(numbers[0])) / dollar_rate
+                return round(salary, 2)
+            elif len(numbers) == 1:
+                # Single number - convert to USD
+                return round(int(numbers[0]) / dollar_rate, 2)
+            else:
+                return 0
+        except (ValueError, IndexError) as e:
+            print(f"Error converting numbers: {e}")
+            return 0
+
     def clean_text(self, text):
         if not text:
             return ''
         return ' '.join(text.split())
 
-    def scrape_job(self, url=None, post_text=None , has_logo=False , experience=None, education=None, employment=None):
+    def scrape_job(self, url=None, post_text=None , has_logo=False , experience=None, education=None, employment=None , hasQuestion=None):
+        print("hasQuestion: ",hasQuestion)
         global logoValue
         global exp
         global edu
         global emp
+        global has_questions
+        has_questions = 1 if (hasQuestion=="true") else 0
         exp = experience
         edu = education
         emp = employment
@@ -90,6 +150,7 @@ class JobScraper:
         
         try:
             extracted_data = get_chatbot_response(self.chatbot, post_text)
+            print("The extracted data is: ",extracted_data)
             fraud_value = "No"
             
             fraud_patterns = [
@@ -169,42 +230,6 @@ class JobScraper:
             print(f"Error in post text analysis: {str(e)}")
 
         return data
-
-    # def _enrich_job_data(self, job_data):
-    #     if not job_data['profile'] and job_data['job_title']:
-    #         job_data['profile'] = job_data['job_title']
-        
-    #     if not job_data['type_of_industry'] and job_data['job_description']:
-    #         industries = ['IT', 'Healthcare', 'Finance', 'Education', 'Manufacturing', 'Retail']
-    #         for industry in industries:
-    #             if industry.lower() in job_data['job_description'].lower():
-    #                 job_data['type_of_industry'] = industry
-    #                 break
-        
-    #     if not job_data['operations'] and job_data['job_description']:
-    #         operations = ['Customer Service', 'Sales', 'Support', 'Development', 'Research']
-    #         for operation in operations:
-    #             if operation.lower() in job_data['job_description'].lower():
-    #                 job_data['operations'] = operation
-    #                 break
-        
-    #     if not job_data['department'] and job_data['job_title']:
-    #         departments = {
-    #             'IT': ['developer', 'engineer', 'programmer'],
-    #             'HR': ['hr', 'human resources', 'recruitment'],
-    #             'Marketing': ['marketing', 'brand', 'social media'],
-    #             'Sales': ['sales', 'business development'],
-    #             'Finance': ['finance', 'accounts', 'accounting']
-    #         }
-    #         for dept, keywords in departments.items():
-    #             if any(keyword in job_data['job_title'].lower() for keyword in keywords):
-    #                 job_data['department'] = dept
-    #                 break
-        
-    #     for key in job_data:
-    #         if job_data[key] is None:
-    #             job_data[key] = ''
-
 
 
     def _enrich_job_data(self, job_data):
@@ -466,8 +491,10 @@ class JobScraper:
             Dept_Not_Provided = 1
 
         # For placeholder variables not part of mapping
-        salary_diff = 0  # Assume it will be calculated elsewhere
-        has_questions = 0  # Assume this is based on presence of questions in the post text
+        # salary_diff = self.parse_salary()  
+        salary_text = job_data.get('range_of_salary', '')
+        salary_diff = self.parse_salary(salary_text)
+
         print("Dept_Project_Management:", Dept_Project_Management)
         print("Dept_Hospitality_Food_Services:", Dept_Hospitality_Food_Services)
         print("Dept_Product_Management_Development:", Dept_Product_Management_Development)
@@ -503,7 +530,7 @@ class JobScraper:
         print("experience_encoded:", experience_encoded)
         print("Dept_Not_Provided:", Dept_Not_Provided)
 
-        with open('C:\\Users\\HP\\Desktop\\Fake-Job-Post-Detection\\backend\\app\\xgb_fraud_model.pkl', 'rb') as file:
+        with open('C:\\Users\\HP\\Desktop\\Fake-Job-Post-Detection\\backend\\app\\new_model.pkl', 'rb') as file:
             model = pickle.load(file)
 
             input_data = np.array([[
@@ -548,6 +575,10 @@ class JobScraper:
 
         # Print result
         print("Prediction (0: Not Fraud, 1: Fraud):", prediction[0])
+        if prediction[0] == 1:
+            job_data['fraudulent'] = 'Yes'
+        else:
+            job_data['fraudulent'] = 'No'
 
 
     def _scrape_naukri(self, url):
@@ -577,3 +608,4 @@ class JobScraper:
         except Exception as e:
             print(f"Error cleaning HTML content: {str(e)}")
             return html_content
+            
