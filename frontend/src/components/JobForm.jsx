@@ -1,35 +1,42 @@
-import { useState } from 'react';
-import axios from 'axios';
-import Tesseract from 'tesseract.js';
-import { FiUpload } from 'react-icons/fi';
+import { useState } from "react";
+import axios from "axios";
+import Tesseract from "tesseract.js";
+import { FiUpload } from "react-icons/fi";
 
 const JobForm = ({ setJobData, setLoading, setError }) => {
-  const [url, setUrl] = useState('');
-  const [jobPost, setJobPost] = useState('');
-  const [showPlatformInput, setShowPlatformInput] = useState(false);
-  const [platform, setPlatform] = useState('');
+  const [url, setUrl] = useState("");
+  const [jobPost, setJobPost] = useState("");
+  const [platform, setPlatform] = useState("");
   const [extractingText, setExtractingText] = useState(false);
+  const [hasLogo, setHasLogo] = useState(false); // Toggle for company logo
+  const [experience, setExperience] = useState("");
+  const [education, setEducation] = useState("");
+  const [employment, setEmployment] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('https://fake-job-post-detection.onrender.com/api/analyze', {
+      const response = await axios.post("http://127.0.0.1:5000//api/analyze", {
         url: url || null,
         job_post: jobPost || null,
-        platform: platform || null
+        platform: platform || null,
+        has_logo: hasLogo,
+        experience: experience || null,
+        education: education || null,
+        employment: employment || null,
       });
+    
       setJobData(response.data);
     } catch (error) {
-      setError(error.response?.data?.error || 'An error occurred while analyzing the job posting');
+      setError(
+        error.response?.data?.error ||
+          "An error occurred while analyzing the job posting"
+      );
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleTextareaClick = () => {
-    setShowPlatformInput(true);
   };
 
   const handleImageUpload = async (e) => {
@@ -38,108 +45,210 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
 
     setExtractingText(true);
     try {
-      const { data: { text } } = await Tesseract.recognize(
-        file,
-        'eng',
-        { logger: m => console.log(m) }
-      );
+      const {
+        data: { text },
+      } = await Tesseract.recognize(file, "eng", {
+        logger: (m) => console.log(m),
+      });
       setJobPost(text);
-      setShowPlatformInput(true);
     } catch (error) {
-      console.error('OCR Error:', error);
-      setError('Failed to extract text from image');
+      console.error("OCR Error:", error);
+      setError("Failed to extract text from image");
     } finally {
       setExtractingText(false);
     }
   };
+  const experience_order = [
+    "Not Provided",
+    "Not Applicable",
+    "Internship",
+    "Entry level",
+    "Associate",
+    "Mid-Senior level",
+    "Director",
+    "Executive",
+  ];
+
+  const education_order = [
+    "Not Provided",
+    "Unspecified",
+    "Some High School Coursework",
+    "High School or equivalent",
+    "Vocational - HS Diploma",
+    "Some College Coursework Completed",
+    "Certification",
+    "Vocational",
+    "Vocational - Degree",
+    "Associate Degree",
+    "Bachelor's Degree",
+    "Master's Degree",
+    "Doctorate",
+    "Professional",
+  ];
+
+  const employment_order = [
+    "Not Provided",
+    "Other",
+    "Temporary",
+    "Contract",
+    "Part-time",
+    "Full-time",
+  ];
 
   return (
-    <div className="form-container">
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="url">Enter Job URL or paste a job post</label>
+    <div className="form-container" style={styles.container}>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        {/* URL Input */}
+        <div style={styles.formGroup}>
+          <label htmlFor="url" style={styles.label}>
+            Job URL
+          </label>
           <input
             id="url"
             type="text"
-            placeholder="Enter job posting URL"
+            placeholder="Paste job URL here"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            style={styles.input}
           />
         </div>
 
-        <div className="form-group">
+        {/* Image Upload with Toggle */}
+        <div style={styles.formGroup}>
+          <div style={styles.uploadContainer}>
+            <label htmlFor="imageUpload" style={styles.uploadLabel}>
+              <FiUpload
+                size={16}
+                style={{ marginRight: "8px", color: "#fff" }}
+              />
+              Upload Job Image
+            </label>
+            <input
+              id="imageUpload"
+              type="file"
+              accept="image/jpeg, image/png"
+              onChange={handleImageUpload}
+              style={{ display: "none" }}
+            />
+            <div style={{ color: "black" }}>has company logo?</div>
+            {/* Toggle Button */}
+            <div
+              onClick={() => setHasLogo((prev) => !prev)}
+              style={{
+                ...styles.toggle,
+                backgroundColor: hasLogo ? "green" : "black",
+              }}
+            >
+              <div
+                style={{
+                  ...styles.toggleDot,
+                  marginLeft: hasLogo ? "20px" : "2px",
+                }}
+              />
+            </div>
+          </div>
+
+          {extractingText && (
+            <p style={styles.extractingText}>Extracting text from image...</p>
+          )}
+        </div>
+
+        {/* Job Platform Dropdown */}
+        <div style={styles.formGroup}>
+          <label htmlFor="platform" style={styles.label}>
+            Select Job Platform
+          </label>
+          <select
+            id="platform"
+            value={platform}
+            onChange={(e) => setPlatform(e.target.value)}
+            style={styles.select}
+          >
+            <option value="">-- Choose a Platform --</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="Naukri">Naukri</option>
+            <option value="Internshala">Internshala</option>
+            <option value="Unstop">Unstop</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+
+        {/* Job Post Textarea */}
+        <div style={styles.formGroup}>
+          <label htmlFor="jobPost" style={styles.label}>
+            Job Description
+          </label>
           <textarea
             id="jobPost"
-            placeholder="Paste job posting content here"
+            placeholder="Paste job post content here..."
             value={jobPost}
             onChange={(e) => setJobPost(e.target.value)}
-            onClick={handleTextareaClick}
+            style={styles.textarea}
+            rows={6}
           />
         </div>
 
-        <div
-  className="form-group file-upload"
-  style={{
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: '4px',
-    margin: '8px 0',
-    marginBottom:'0px',
-    fontSize: '1px',
-    fontFamily: 'Segoe UI, sans-serif',
-    color: '#333',
-  }}
->
-  <label
-    htmlFor="imageUpload"
-    className="upload-label"
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      backgroundColor: '#f0f0f0',
-      padding: '4px 10px',
-      borderRadius: '6px',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      border: '1px solid #ddd',
-      fontWeight: '300',
-    }}
-    onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#e2e8f0')}
-    onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#f0f0f0')}
-  >
-    <FiUpload size={16} style={{ marginRight: '6px', color: '#555' }} />
-    Upload Job Image (JPG/PNG)
-  </label>
-  <input
-    id="imageUpload"
-    type="file"
-    accept="image/jpeg, image/png"
-    onChange={handleImageUpload}
-    style={{ display: 'none' }}
-  />
-  {extractingText && (
-    <p style={{ fontStyle: 'italic', fontSize: '10px', color: '#888' }}>
-      Extracting text from image...
-    </p>
-  )}
-</div>
+        {/* Experience Level Dropdown */}
+        <div style={styles.formGroup}>
+          <label htmlFor="experience" style={styles.label}>
+            Experience Level
+          </label>
+          <select
+            id="experience"
+            value={experience}
+            onChange={(e) => setExperience(e.target.value)}
+            style={styles.select}
+          >
+            <option value="">-- Select Experience --</option>
+            {experience_order.map((level, idx) => (
+              <option key={idx} value={level}>
+                {level}
+              </option>
+            ))}
+          </select>
+        </div>
 
+        {/* Education Level Dropdown */}
+        <div style={styles.formGroup}>
+          <label htmlFor="education" style={styles.label}>
+            Education Level
+          </label>
+          <select
+            id="education"
+            value={education}
+            onChange={(e) => setEducation(e.target.value)}
+            style={styles.select}
+          >
+            <option value="">-- Select Education --</option>
+            {education_order.map((level, idx) => (
+              <option key={idx} value={level}>
+                {level}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        {showPlatformInput && (
-          <div className='platform-input'>
-            <label htmlFor="platform">Job Platform: </label>
-            <input
-              id="platform"
-              type="text"
-              placeholder="Enter job platform (LinkedIn, Indeed, etc.)"
-              value={platform}
-              onChange={(e) => setPlatform(e.target.value)}
-            />
-          </div>
-        )}
+        {/* Employment Type Dropdown */}
+        <div style={styles.formGroup}>
+          <label htmlFor="employment" style={styles.label}>
+            Employment Type
+          </label>
+          <select
+            id="employment"
+            value={employment}
+            onChange={(e) => setEmployment(e.target.value)}
+            style={styles.select}
+          >
+            <option value="">-- Select Employment --</option>
+            {employment_order.map((type, idx) => (
+              <option key={idx} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <button type="submit" className="submit-button">
+        <button type="submit" style={styles.button}>
           Analyze Job
         </button>
       </form>
@@ -148,3 +257,105 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
 };
 
 export default JobForm;
+
+const styles = {
+  container: {
+    maxWidth: "600px",
+    height: "auto",
+    margin: "auto",
+    padding: "20px",
+    backgroundColor: "#f7f9fc",
+    borderRadius: "16px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+    fontFamily: "Segoe UI, sans-serif",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+  },
+  formGroup: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  label: {
+    fontSize: "14px",
+    marginBottom: "6px",
+    color: "#333",
+    fontWeight: "500",
+  },
+  input: {
+    padding: "10px 12px",
+    fontSize: "14px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    outline: "none",
+  },
+  uploadContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "16px",
+  },
+  uploadLabel: {
+    display: "inline-flex",
+    alignItems: "center",
+    backgroundColor: "#00BFFF",
+    color: "white",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    cursor: "pointer",
+    fontSize: "14px",
+    fontWeight: "400",
+    transition: "all 0.2s ease",
+    width: "fit-content",
+  },
+  toggle: {
+    width: "40px",
+    height: "20px",
+    borderRadius: "20px",
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+  },
+  toggleDot: {
+    width: "16px",
+    height: "16px",
+    borderRadius: "50%",
+    backgroundColor: "white",
+    transition: "margin-left 0.3s ease",
+  },
+  extractingText: {
+    fontStyle: "italic",
+    fontSize: "12px",
+    marginTop: "4px",
+    color: "#718096",
+  },
+  select: {
+    padding: "10px 12px",
+    borderRadius: "8px",
+    fontSize: "14px",
+    border: "1px solid #ccc",
+    backgroundColor: "#fff",
+    outline: "none",
+  },
+  textarea: {
+    padding: "10px 12px",
+    borderRadius: "8px",
+    fontSize: "14px",
+    border: "1px solid #ccc",
+    resize: "vertical",
+    outline: "none",
+  },
+  button: {
+    padding: "12px",
+    backgroundColor: "#4a90e2",
+    color: "#fff",
+    fontWeight: "bold",
+    borderRadius: "8px",
+    border: "none",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+  },
+};
