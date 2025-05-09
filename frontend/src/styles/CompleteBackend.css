@@ -32,7 +32,7 @@
 }
 
 .dark-theme .header h1 {
-  color: #f5f5f5;
+  color: #f3eded;
 }
 
 .form-container {
@@ -44,7 +44,7 @@
 }
 
 .light-theme .form-container {
-  background-color: #f5f5f5;
+  background-color: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -56,7 +56,9 @@
 .form-group {
   margin-bottom: 15px;
 }
-
+.platform-dropdown option,select{
+  color: black;
+}
 .form-group label {
   display: block;
   margin-bottom: 35px;
@@ -70,7 +72,7 @@
 }
 
 .dark-theme .form-group label {
-  color: #e0e0e0;
+  color: #130707;
 }
 
 .form-group input, .form-group textarea {
@@ -116,7 +118,7 @@
 
 .light-theme .platform-input input {
   border: 1px solid #ddd;
-  background-color: #fff;
+  background-color: #1b0606;
   color: #333;
 }
 
