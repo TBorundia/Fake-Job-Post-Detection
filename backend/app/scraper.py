@@ -442,6 +442,8 @@ class JobScraper:
         # --- Set telecommuting & company logo flags ---
         telecommuting = job_data['telecommunication']
         has_company_logo = logoValue
+        job_data["company_logo"] = 1 if logoValue else 0
+
 
         # --- Job description length ---
         description_without_spaces=job_data['job_description']
