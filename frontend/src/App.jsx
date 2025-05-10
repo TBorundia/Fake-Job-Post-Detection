@@ -47,9 +47,9 @@ export default function App() {
         <div className="nav-links">
           <Link to="/" className="nav-link">Home</Link>
           <Link to="/aboutus" className="nav-link">About Us</Link>
-          <SignedIn>
+          {/* <SignedIn>
             <Link to="/userdashboard" className="nav-link">User Dashboard</Link>
-          </SignedIn>
+          </SignedIn> */}
           {/* Show "Analyze Post" only when user is signed in */}
           <SignedIn>
             <Link to="/analyzepost" className="nav-link">Analyze Post</Link>
@@ -76,7 +76,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/aboutus" element={<AboutUs></AboutUs>} />
-        <Route path="/userdashboard" element={<UserDashboard></UserDashboard>} />
+        {/* <Route path="/userdashboard" element={<UserDashboard></UserDashboard>} /> */}
         {/* <Route path="/contactus" element={<h1>Contact Us</h1>} /> */}
         <Route
           path="/dashboard"

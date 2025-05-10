@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import axios from "axios";
 import Tesseract from "tesseract.js";
@@ -158,7 +159,7 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
         </div>
 
         {/* Job Platform Dropdown */}
-        <div style={styles.formGroup}>
+        <div style={styles.formGroup} className="platform-dropdown">
           <label htmlFor="platform" style={styles.label}>
             Select Job Platform
           </label>
@@ -193,7 +194,7 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
         </div>
 
         {/* Experience Level Dropdown */}
-        <div style={styles.formGroup}>
+        <div style={styles.formGroup} className="platform-dropdown">
           <label htmlFor="experience" style={styles.label}>
             Experience Level
           </label>
@@ -213,7 +214,7 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
         </div>
 
         {/* Education Level Dropdown */}
-        <div style={styles.formGroup}>
+        <div style={styles.formGroup} className="platform-dropdown">
           <label htmlFor="education" style={styles.label}>
             Education Level
           </label>
@@ -233,7 +234,7 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
         </div>
 
         {/* Employment Type Dropdown */}
-        <div style={styles.formGroup}>
+        <div style={styles.formGroup} className="platform-dropdown">
           <label htmlFor="employment" style={styles.label}>
             Employment Type
           </label>
