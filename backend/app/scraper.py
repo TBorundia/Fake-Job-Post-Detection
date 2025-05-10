@@ -594,6 +594,7 @@ class JobScraper:
                 content = page.content()
                 browser.close()
                 cleaned_content = self._clean_html_content(content)
+                print(cleaned_content)
                 data = self._analyze_post_text(cleaned_content)
         
         except Exception as e:
