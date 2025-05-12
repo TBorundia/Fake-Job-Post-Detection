@@ -239,6 +239,35 @@ class JobScraper:
             if job_data[key] is None:
                 job_data[key] = ''
 
+        # First extract info from job description
+        extracted_info = self._extract_info_from_text(job_data['job_description'])
+        
+        # Update job_data with extracted info
+        e1 = extracted_info['experience']
+        e2 = extracted_info['education']
+        e3 = extracted_info['employment']
+        
+        # Rest of your existing _enrich_job_data code...
+        experience_order = [
+            'Not Provided', 'Not Applicable', 'Internship', 'Entry level',
+            'Associate', 'Mid-Senior level', 'Director', 'Executive'
+        ]
+        
+        education_order = [
+            'Not Provided', 'Unspecified', 'Some High School Coursework', 'High School or equivalent',
+            'Vocational - HS Diploma', 'Some College Coursework Completed', 'Certification',
+            'Vocational', 'Vocational - Degree', 'Associate Degree', "Bachelor's Degree",
+            "Master's Degree", 'Doctorate', 'Professional'
+        ]
+        
+        employment_order = ['Not Provided', 'Other', 'Temporary', 'Contract',
+                        'Part-time', 'Full-time']
+        
+        # --- Encode experience ---
+       
+        
+        # Rest of your existing code...
+
     
         global Dept_Project_Management
         global Dept_Hospitality_Food_Services 
@@ -276,20 +305,20 @@ class JobScraper:
         global Dept_Not_Provided
 
         # Define the orders and mapping
-        experience_order = [
-            'Not Provided', 'Not Applicable', 'Internship', 'Entry level',
-            'Associate', 'Mid-Senior level', 'Director', 'Executive'
-        ]
+        # experience_order = [
+        #     'Not Provided', 'Not Applicable', 'Internship', 'Entry level',
+        #     'Associate', 'Mid-Senior level', 'Director', 'Executive'
+        # ]
 
-        education_order = [
-            'Not Provided', 'Unspecified', 'Some High School Coursework', 'High School or equivalent',
-            'Vocational - HS Diploma', 'Some College Coursework Completed', 'Certification',
-            'Vocational', 'Vocational - Degree', 'Associate Degree', "Bachelor's Degree",
-            "Master's Degree", 'Doctorate', 'Professional'
-        ]
+        # education_order = [
+        #     'Not Provided', 'Unspecified', 'Some High School Coursework', 'High School or equivalent',
+        #     'Vocational - HS Diploma', 'Some College Coursework Completed', 'Certification',
+        #     'Vocational', 'Vocational - Degree', 'Associate Degree', "Bachelor's Degree",
+        #     "Master's Degree", 'Doctorate', 'Professional'
+        # ]
 
-        employment_order = ['Not Provided', 'Other', 'Temporary', 'Contract',
-                            'Part-time', 'Full-time']
+        # employment_order = ['Not Provided', 'Other', 'Temporary', 'Contract',
+        #                     'Part-time', 'Full-time']
 
         department_mapping = {
             "Marketing": ["Marketing", "MKT", "MKTG", "Marketing and Communications", "Marketing – Pame Stoixima",
@@ -394,20 +423,38 @@ class JobScraper:
         }
 
         # --- Encode experience ---
+        # try:
+        #     experience_encoded = experience_order.index(exp)
+        # except ValueError:
+        #     experience_encoded = 0  # 'Not Provided'
+
+        # # --- Encode education ---
+        # try:
+        #     education_encoded = education_order.index(edu)
+        # except ValueError:
+        #     education_encoded = 0
+
+        # # --- Encode employment ---
+        # try:
+        #     employment_encoded = employment_order.index(emp)
+        # except ValueError:
+        #     employment_encoded = 0
+
+
         try:
-            experience_encoded = experience_order.index(exp)
+            experience_encoded = experience_order.index(e1)
         except ValueError:
             experience_encoded = 0  # 'Not Provided'
-
+        
         # --- Encode education ---
         try:
-            education_encoded = education_order.index(edu)
+            education_encoded = education_order.index(e2)
         except ValueError:
             education_encoded = 0
-
+        
         # --- Encode employment ---
         try:
-            employment_encoded = employment_order.index(emp)
+            employment_encoded = employment_order.index(e3)
         except ValueError:
             employment_encoded = 0
 
@@ -555,24 +602,24 @@ class JobScraper:
             job_data['fraudulent'] = 'No'
 
 
-    def _scrape_naukri(self, url):
-        data = {}
-        try:
-            with sync_playwright() as pw:
-                browser = pw.firefox.launch(headless=True)
-                page = browser.new_page()
-                page.goto(url, timeout=60000)
-                page.wait_for_selector('body', timeout=10000)
-                content = page.content()
-                browser.close()
-                cleaned_content = self._clean_html_content(content)
-                print(cleaned_content)
-                data = self._analyze_post_text(cleaned_content)
+    # def _scrape_naukri(self, url):
+    #     data = {}
+    #     try:
+    #         with sync_playwright() as pw:
+    #             browser = pw.firefox.launch(headless=True)
+    #             page = browser.new_page()
+    #             page.goto(url, timeout=60000)
+    #             page.wait_for_selector('body', timeout=10000)
+    #             content = page.content()
+    #             browser.close()
+    #             cleaned_content = self._clean_html_content(content)
+    #             print(cleaned_content)
+    #             data = self._analyze_post_text(cleaned_content)
         
-        except Exception as e:
-            print(f"Error scraping Website: {str(e)}")
+    #     except Exception as e:
+    #         print(f"Error scraping Website: {str(e)}")
         
-        return data
+    #     return data
 
     def _clean_html_content(self, html_content):
         try:
@@ -584,3 +631,132 @@ class JobScraper:
             print(f"Error cleaning HTML content: {str(e)}")
             return html_content
             
+
+
+
+    
+    def _scrape_naukri(self, url):
+        data = {}
+        try:
+            with sync_playwright() as pw:
+                browser = pw.firefox.launch(headless=True)
+                page = browser.new_page()
+                page.goto(url, timeout=60000)
+                page.wait_for_selector('body', timeout=10000)
+                content = page.content()
+                browser.close()
+                cleaned_content = self._clean_html_content(content)
+                print("Cleaned content:", cleaned_content)  # Debug print
+                data = self._analyze_post_text(cleaned_content)
+        
+        except Exception as e:
+            print(f"Error scraping Website: {str(e)}")
+        
+        return data
+
+    def _extract_info_from_text(self, text):
+        """Extract experience, education and employment type from text"""
+        info = {
+            'experience': 'Not Provided',
+            'education': 'Not Provided',
+            'employment': 'Not Provided'
+        }
+        
+        # Experience patterns
+        exp_patterns = [
+            (r'(?:experience|exp\.?)\s*:\s*([^\n]+)', 0),  # "Experience: 2-4 years"
+            (r'(\d+\s*[-+]\s*\d+\s+years?\s+experience)', 0),  # "2-4 years experience"
+            (r'(?:fresher|entry level|beginner)', 'Entry level'),
+            (r'(?:mid[- ]senior|experienced professional)', 'Mid-Senior level'),
+            (r'(?:senior|lead|manager)', 'Director')
+        ]
+        
+        # Education patterns
+        edu_patterns = [
+            (r'(?:education|qualification)\s*:\s*([^\n]+)', 0),  # "Education: B.Tech"
+            (r'\b(b\.?tech|b\.?e\.?|bachelor)', "Bachelor's Degree"),
+            (r'\b(m\.?tech|m\.?e\.?|master)', "Master's Degree"),
+            (r'\b(ph\.?d|doctorate)', 'Doctorate'),
+            (r'\b(diploma|certification)', 'Certification'),
+            (r'\b(h\.?s\.?c|high school|12th)', 'High School or equivalent')
+        ]
+        
+        # Employment type patterns
+        emp_patterns = [
+            (r'(?:employment type|job type)\s*:\s*([^\n]+)', 0),  # "Employment Type: Full-time"
+            (r'\b(full[- ]?time)', 'Full-time'),
+            (r'\b(part[- ]?time)', 'Part-time'),
+            (r'\b(contract|contractual)', 'Contract'),
+            (r'\b(internship|intern)', 'Internship')
+        ]
+        
+        # Extract experience
+        for pattern, default in exp_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                info['experience'] = match.group(1).strip() if isinstance(default, int) else default
+                break
+        
+        # Extract education
+        for pattern, default in edu_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                info['education'] = match.group(1).strip() if isinstance(default, int) else default
+                break
+        
+        # Extract employment type
+        for pattern, default in emp_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                info['employment'] = match.group(1).strip() if isinstance(default, int) else default
+                break
+        
+        return info
+
+    # def _enrich_job_data(self, job_data):
+    #     # First extract info from job description
+    #     extracted_info = self._extract_info_from_text(job_data['job_description'])
+        
+    #     # Update job_data with extracted info
+    #     job_data['experience'] = extracted_info['experience']
+    #     job_data['qualification'] = extracted_info['education']
+    #     job_data['type_of_employment'] = extracted_info['employment']
+        
+    #     # Rest of your existing _enrich_job_data code...
+    #     experience_order = [
+    #         'Not Provided', 'Not Applicable', 'Internship', 'Entry level',
+    #         'Associate', 'Mid-Senior level', 'Director', 'Executive'
+    #     ]
+        
+    #     education_order = [
+    #         'Not Provided', 'Unspecified', 'Some High School Coursework', 'High School or equivalent',
+    #         'Vocational - HS Diploma', 'Some College Coursework Completed', 'Certification',
+    #         'Vocational', 'Vocational - Degree', 'Associate Degree', "Bachelor's Degree",
+    #         "Master's Degree", 'Doctorate', 'Professional'
+    #     ]
+        
+    #     employment_order = ['Not Provided', 'Other', 'Temporary', 'Contract',
+    #                     'Part-time', 'Full-time']
+        
+    #     # --- Encode experience ---
+    #     try:
+    #         global experience_encoded
+    #         experience_encoded = experience_order.index(job_data['experience'])
+    #     except ValueError:
+    #         experience_encoded = 0  # 'Not Provided'
+        
+    #     # --- Encode education ---
+    #     try:
+    #         global education_encoded
+    #         education_encoded = education_order.index(job_data['qualification'])
+    #     except ValueError:
+    #         education_encoded = 0
+        
+    #     # --- Encode employment ---
+    #     try:
+    #         global employment_encoded
+    #         employment_encoded = employment_order.index(job_data['type_of_employment'])
+    #     except ValueError:
+    #         employment_encoded = 0
+        
+    #     # Rest of your existing code...
