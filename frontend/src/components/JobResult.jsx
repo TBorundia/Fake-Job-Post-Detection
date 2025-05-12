@@ -105,7 +105,7 @@ const JobResult = () => {
   return (
     <div className="results-container">
       <div className="download-btn-container">
-        <button onClick={downloadAsPDF} className="download-pdf-btn">
+        <button onClick={downloadAsPDF} style={{marginTop:'35px'}} className="download-pdf-btn">
           Download as PDF
         </button>
       </div>

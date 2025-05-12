@@ -151,35 +151,7 @@ class JobScraper:
         try:
             extracted_data = get_chatbot_response(self.chatbot, post_text)
             print("The extracted data is: ",extracted_data)
-            fraud_value = "No"
-            
-            fraud_patterns = [
-                r'"Fraudulent":\s*"(Yes|No)"',
-                r'"Fraudulent":\s*(Yes|No)',
-                r'Fraudulent:\s*(Yes|No)',
-                r'"Is Fraudulent":\s*"(Yes|No)"',
-                r'"Scam":\s*"(Yes|No)"',
-                r'"Likely Fraud":\s*"(Yes|No)"',
-                r'is_fraudulent:\s*(true|false)',
-                r'"high_risk":\s*(true|false)'
-            ]
-            
-            for pattern in fraud_patterns:
-                match = re.search(pattern, extracted_data, re.IGNORECASE)
-                if match:
-                    value = match.group(1).lower()
-                    fraud_value = "Yes" if value in ['yes', 'true'] else 'No'
-                    break
-            
-            if fraud_value == "No":
-                fraud_indicators = [
-                    'high risk', 'scam', 'fraud', 'too good to be true',
-                    'upfront payment', 'money transfer', 'payment required'
-                ]
-                if any(indicator in extracted_data.lower() for indicator in fraud_indicators):
-                    fraud_value = "Yes"
-            
-            data['fraudulent'] = fraud_value
+        
 
             if "[" in extracted_data and "]" in extracted_data:
                 try:
@@ -532,7 +504,7 @@ class JobScraper:
         print("experience_encoded:", experience_encoded)
         print("Dept_Not_Provided:", Dept_Not_Provided)
 
-        with open(r'C:\Users\HP\Downloads\FAKE-REAL-JOB-POST\Fake-Job-Post-Detection\backend\app\new_model.pkl', 'rb') as file:
+        with open(r'C:\\Users\\HP\\Desktop\\Fake-Job-Post-Detection\backend\\app\\new_model.pkl', 'rb') as file:
             model = pickle.load(file)
 
             input_data = np.array([[
