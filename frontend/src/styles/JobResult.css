@@ -1,9 +1,12 @@
 .results-container {
   margin-top: 5%;
-  padding: 20px;
+  padding: 100px;
   border-radius: 8px;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   position: relative; /* Added for positioning the fraud indicator */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
 }
 
 .light-theme .results-container {
@@ -88,8 +91,9 @@
 }
 
 .results-container h2 {
-  padding-left: 40%;
   transition: color 0.3s ease;
+  text-align: center; /* Center the heading */
+  width: 100%; /* Ensure full width for proper centering */
 }
 
 .light-theme .results-container h2 {
@@ -102,9 +106,19 @@
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 2fr));
+  gap: 50px;
+  margin-top: 10px;
+  width: 100%; /* Ensure full width */
+  max-width: 1000px; /* Limit maximum width for better readability */
+}
+
+/* Single column grid styles */
+.results-grid.single-column {
+  grid-template-columns: 1fr;
+  max-width: 600px; /* Slightly narrower for single column */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .result-item {
@@ -151,9 +165,8 @@
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .results-container h2 {
-    padding-left: 0;
-    text-align: center;
+  .results-container {
+    padding: 15px;
   }
   
   .results-grid {
@@ -167,5 +180,19 @@
     margin-bottom: 15px;
     display: flex;
     justify-content: center;
+  }
+  
+  .fraud-indicator {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .results-container h2 {
+    padding-left: 0;
+    text-align: center;
   }
 }

@@ -1362,7 +1362,7 @@ class JobScraper:
         print("experience_encoded:", experience_encoded)
         print("Dept_Not_Provided:", Dept_Not_Provided)
 
-        with open(r'C:\\Users\\HP\Desktop\\Fake-Job-Post-Detection\\backend\\app\\new_model.pkl', 'rb') as file:
+        with open(r'C:\Users\HP\Downloads\FAKE-REAL-JOB-POST\Fake-Job-Post-Detection\backend\app\new_model.pkl', 'rb') as file:
             model = pickle.load(file)
 
             input_data = np.array([[
