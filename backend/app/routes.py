@@ -4,7 +4,7 @@ from app.scraper import JobScraper
 main = Blueprint('main', __name__)
 scraper = JobScraper()
 
-@main.route('/api/analyze', methods=['POST'])
+@main.route('/api/analyze2', methods=['POST'])
 def analyze_job():
     data = request.get_json()
     url = data.get('url')
