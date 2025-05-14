@@ -66,12 +66,12 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
   const experience_order = [
     "Not Provided",
     "Not Applicable",
-    "Internship",
-    "Entry level",
-    "Associate",
-    "Mid-Senior level",
-    "Director",
-    "Executive",
+    "Internship (0-1)",
+    "Entry level (0-2",
+    "Associate (1-3)",
+    "Mid-Senior level (4-7)",
+    "Director (8-12)",
+    "Executive (12+)",
   ];
 
   const education_order = [
