@@ -20,7 +20,7 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post("https://job-validator.onrender.com//api/analyze2", {
+      const response = await axios.post("https://job-validator-2.onrender.com//api/analyze2", {
         url: url || null,
         job_post: jobPost || null,
         platform: platform || null,

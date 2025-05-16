@@ -595,7 +595,7 @@ class JobScraper:
         data = {}
         try:
             with sync_playwright() as pw:
-                browser = pw.firefox.launch(headless=True)
+                browser = pw.chromium.launch(headless=True)
                 page = browser.new_page()
                 page.goto(url, timeout=60000)
                 page.wait_for_selector('body', timeout=10000)
