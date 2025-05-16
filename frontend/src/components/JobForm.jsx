@@ -67,7 +67,7 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
     "Not Provided",
     "Not Applicable",
     "Internship (0-1)",
-    "Entry level (0-2",
+    "Entry level (0-2)",
     "Associate (1-3)",
     "Mid-Senior level (4-7)",
     "Director (8-12)",

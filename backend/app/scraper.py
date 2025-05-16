@@ -6,6 +6,8 @@ from playwright.sync_api import sync_playwright
 from .chatbot import initialize_chatbot, get_chatbot_response
 import pickle
 import numpy as np
+import os
+
 
 class JobScraper:
     def __init__(self):
@@ -532,7 +534,13 @@ class JobScraper:
         print("experience_encoded:", experience_encoded)
         print("Dept_Not_Provided:", Dept_Not_Provided)
 
-        with open(r'C:\\Users\\HP\\Desktop\\Fake-Job-Post-Detection\\backend\\app\\new_model.pkl', 'rb') as file:
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+        # Construct the full path to the model file
+        model_path = os.path.join(BASE_DIR, 'new_model.pkl')
+
+        # Load the model
+        with open(model_path, 'rb') as file:
             model = pickle.load(file)
 
             input_data = np.array([[

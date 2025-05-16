@@ -6,3 +6,4 @@ python-dotenv
 playwright
 gunicorn
 openai
+numpy
