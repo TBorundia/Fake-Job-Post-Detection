@@ -78,7 +78,7 @@ Best results after testing Logistic Regression and handling multicollinearity (V
 
 ### 2. Clone the Repository  
 ```bash  
-git clone https://github.com/your-username/fake-job-post-detection.git  
+git clone https://github.com/Raj-Singh-3/Fake-Job-Post-Detection.git  
 cd fake-job-post-detection  
 ```  
 
