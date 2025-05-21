@@ -18,7 +18,7 @@ import JobResult from "./components/JobResult";
 
 export default function App() {
   const [theme, setTheme] = useState("Light");
-  
+
   // Apply theme when component mounts and when theme changes
   useEffect(() => {
     if (theme === "Dark") {
@@ -33,7 +33,7 @@ export default function App() {
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "Light" ? "Dark" : "Light"));
   };
-  
+
   return (
     <BrowserRouter>
       {/* Navbar */}
@@ -42,23 +42,30 @@ export default function App() {
         <div className="logo">
           <Link to="/">FakeJobDetect</Link>
         </div>
-        
+
         {/* Navigation links on the right */}
         <div className="nav-links">
-          <Link to="/" className="nav-link">Home</Link>
-          <Link to="/aboutus" className="nav-link">About Us</Link>
+          <Link to="/" className="nav-link">
+            Home
+          </Link>
+
           {/* <SignedIn>
             <Link to="/userdashboard" className="nav-link">User Dashboard</Link>
           </SignedIn> */}
           {/* Show "Analyze Post" only when user is signed in */}
           <SignedIn>
-            <Link to="/analyzepost" className="nav-link">Analyze Post</Link>
+            <Link to="/analyzepost" className="nav-link">
+              Analyze Post
+            </Link>
           </SignedIn>
+          <Link to="/aboutus" className="nav-link">
+            About Us
+          </Link>
           <button onClick={toggleTheme} className="theme-toggle-btn">
             {theme === "Light" ? "Dark" : "Light"}
           </button>
         </div>
-        
+
         {/* Authentication section */}
         <div className="auth-section">
           <SignedOut>
@@ -71,11 +78,11 @@ export default function App() {
           </SignedIn>
         </div>
       </nav>
-      
+
       {/* Routes */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/aboutus" element={<AboutUs></AboutUs>} />
+
         {/* <Route path="/userdashboard" element={<UserDashboard></UserDashboard>} /> */}
         {/* <Route path="/contactus" element={<h1>Contact Us</h1>} /> */}
         <Route
@@ -95,6 +102,7 @@ export default function App() {
           }
         />
         <Route path="/job-result" element={<JobResult />} />
+        <Route path="/aboutus" element={<AboutUs></AboutUs>} />
       </Routes>
     </BrowserRouter>
   );
