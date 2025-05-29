@@ -595,13 +595,14 @@ class JobScraper:
         data = {}
         try:
             with sync_playwright() as pw:
-                browser = pw.chromium.launch(headless=True)
+                browser = pw.firefox.launch(headless=True)
                 page = browser.new_page()
                 page.goto(url, timeout=60000)
                 page.wait_for_selector('body', timeout=10000)
                 content = page.content()
                 browser.close()
                 cleaned_content = self._clean_html_content(content)
+                print("Cleaned content:", cleaned_content)  # Debug print
                 data = self._analyze_post_text(cleaned_content)
         
         except Exception as e:
