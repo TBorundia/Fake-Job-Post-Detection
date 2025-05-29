@@ -261,7 +261,7 @@ export default function App() {
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
-  
+
   return (
     <BrowserRouter>
       <nav className="navbar">
@@ -318,6 +318,7 @@ export default function App() {
           }
         />
         <Route path="/job-result" element={<JobResult />} />
+        <Route path="/aboutus" element={<AboutUs></AboutUs>} />
       </Routes>
     </BrowserRouter>
   );
