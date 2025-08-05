@@ -42,8 +42,6 @@
 //     }
 //   };
 
-
-
 // //   const handleSubmit = async (e) => {
 // //     e.preventDefault();
 // //     setLoading(true);
@@ -61,7 +59,7 @@
 // //         hasQuestion: hasQuestion || null,
 // //       }
 // //     );
-    
+
 // //       setJobData(response.data);
 // //       console.log(response.data)
 // //     } catch (error) {
@@ -139,7 +137,7 @@
 //               onChange={handleImageUpload}
 //               style={{ display: "none" }}
 //             />
-            
+
 //           </div>
 //           {extractingText && (
 //             <p style={styles.extractingText}>Extracting text from image...</p>
@@ -311,7 +309,7 @@
 //   },
 //   uploadContainer: {
 //     justifyContent: "space-between",
-    
+
 //     display: "flex",
 //     flexWrap: "wrap",
 //     alignItems: "center",
@@ -358,33 +356,6 @@
 //     fontSize: "15px",
 //   },
 // };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import { useState } from "react";
 // import axios from "axios";
@@ -471,7 +442,7 @@
 //           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Job Analysis Form</h2>
 //           <p className="text-gray-600 text-sm sm:text-base">Upload or paste job details for comprehensive analysis</p>
 //         </div>
-        
+
 //         <form onSubmit={handleSubmit} className="space-y-6">
 //           {/* URL Input */}
 //           <div className="space-y-2">
@@ -494,8 +465,8 @@
 //                 Upload Job Image
 //               </label>
 //               <div className="flex items-center gap-3">
-//                 <label 
-//                   htmlFor="imageUpload" 
+//                 <label
+//                   htmlFor="imageUpload"
 //                   className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg cursor-pointer hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200 shadow-md"
 //                 >
 //                   <FiUpload size={16} className="mr-2" />
@@ -635,8 +606,8 @@
 //           </div>
 
 //           {/* Submit Button */}
-//           <button 
-//             type="submit" 
+//           <button
+//             type="submit"
 //             className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-4 px-6 rounded-xl hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300 text-lg"
 //           >
 //             Analyze Job Posting
@@ -648,24 +619,6 @@
 // };
 
 // export default JobForm;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import { useState } from "react";
 import axios from "axios";
@@ -688,7 +641,8 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post("https://job-validator-2.onrender.com//api/analyze2", {
+      // const response = await axios.post("https://job-validator-2.onrender.com//api/analyze2", {
+      const response = await axios.post("http://localhost:5000/api/analyze2", {
         url: url || null,
         job_post: jobPost || null,
         platform: platform || null,
@@ -731,18 +685,40 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
   };
 
   const experience_order = [
-    "Not Provided", "Not Applicable", "Internship (0-1)", "Entry level (0-2)",
-    "Associate (1-3)", "Mid-Senior level (4-7)", "Director (8-12)", "Executive (12+)"
+    "Not Provided",
+    "Not Applicable",
+    "Internship (0-1)",
+    "Entry level (0-2)",
+    "Associate (1-3)",
+    "Mid-Senior level (4-7)",
+    "Director (8-12)",
+    "Executive (12+)",
   ];
 
   const education_order = [
-    "Not Provided", "Unspecified", "Some High School Coursework", "High School or equivalent",
-    "Vocational - HS Diploma", "Some College Coursework Completed", "Certification", "Vocational",
-    "Vocational - Degree", "Associate Degree", "Bachelor's Degree", "Master's Degree", "Doctorate", "Professional"
+    "Not Provided",
+    "Unspecified",
+    "Some High School Coursework",
+    "High School or equivalent",
+    "Vocational - HS Diploma",
+    "Some College Coursework Completed",
+    "Certification",
+    "Vocational",
+    "Vocational - Degree",
+    "Associate Degree",
+    "Bachelor's Degree",
+    "Master's Degree",
+    "Doctorate",
+    "Professional",
   ];
 
   const employment_order = [
-    "Not Provided", "Other", "Temporary", "Contract", "Part-time", "Full-time"
+    "Not Provided",
+    "Other",
+    "Temporary",
+    "Contract",
+    "Part-time",
+    "Full-time",
   ];
 
   return (
@@ -756,7 +732,7 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
             Upload or paste job details for comprehensive analysis
           </p>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* URL Input */}
           <div className="space-y-2">
@@ -779,8 +755,8 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
                 Upload Job Image
               </label>
               <div className="flex items-center gap-3">
-                <label 
-                  htmlFor="imageUpload" 
+                <label
+                  htmlFor="imageUpload"
                   className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg cursor-pointer hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-200 shadow-md"
                 >
                   <FiUpload size={16} className="mr-2" />
@@ -825,12 +801,12 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
             <div
               onClick={() => setHasLogo(!hasLogo)}
               className={`relative inline-flex w-12 h-6 rounded-full cursor-pointer transition-all duration-300 ${
-                hasLogo ? 'bg-green-500' : 'bg-gray-400'
+                hasLogo ? "bg-green-500" : "bg-gray-400"
               } hover:shadow-lg transform hover:scale-105`}
             >
               <div
                 className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 ${
-                  hasLogo ? 'translate-x-6' : 'translate-x-0.5'
+                  hasLogo ? "translate-x-6" : "translate-x-0.5"
                 }`}
               />
             </div>
@@ -867,7 +843,9 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
             >
               <option value="">-- Select Experience --</option>
               {experience_order.map((level, idx) => (
-                <option key={idx} value={level}>{level}</option>
+                <option key={idx} value={level}>
+                  {level}
+                </option>
               ))}
             </select>
           </div>
@@ -884,7 +862,9 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
             >
               <option value="">-- Select Education --</option>
               {education_order.map((level, idx) => (
-                <option key={idx} value={level}>{level}</option>
+                <option key={idx} value={level}>
+                  {level}
+                </option>
               ))}
             </select>
           </div>
@@ -901,7 +881,9 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
             >
               <option value="">-- Select Employment --</option>
               {employment_order.map((type, idx) => (
-                <option key={idx} value={type}>{type}</option>
+                <option key={idx} value={type}>
+                  {type}
+                </option>
               ))}
             </select>
           </div>
@@ -922,8 +904,8 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
           </div>
 
           {/* Submit Button */}
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3 px-4 sm:py-4 sm:px-6 rounded-xl hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300 text-base sm:text-lg"
           >
             Analyze Job Posting

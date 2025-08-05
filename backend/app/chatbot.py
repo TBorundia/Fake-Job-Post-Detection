@@ -9,6 +9,7 @@ load_dotenv()
 def initialize_chatbot():
     """Initialize the OpenAI client"""
     client = OpenAI(
+        
         base_url="https://openrouter.ai/api/v1",
         api_key=os.getenv("OPENROUTER_API_KEY"),
     )
@@ -48,7 +49,7 @@ Return only the array of extracted values, with empty strings for missing values
                 "HTTP-Referer": "http://localhost:5000",
                 "X-Title": "Job Post Analyzer",
             },
-            model="openai/gpt-3.5-turbo",
+            model="openai/gpt-4.1",
             messages=[{"role": "user", "content": prompt}]
         )
         
@@ -62,3 +63,7 @@ Return only the array of extracted values, with empty strings for missing values
         if hasattr(e, 'response'):
             print(f"API Response: {e.response.text}")
         return f"Error: {str(e)}"
+
+
+
+
