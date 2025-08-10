@@ -2,11 +2,11 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('./usermodel');
+const User = require('./models/userModel');
 
 const router = express.Router();
 // Add at the top with other requires
-const JobAnalysis = require('./jobModel');
+const JobAnalysis = require('./models/jobModel');
 
 
 //<==================== Before Job Post =======================>
