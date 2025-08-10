@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import JobForm from './components/JobForm';
@@ -47,13 +46,3 @@ function CompleteBackend() {
 }
 
 export default CompleteBackend;
-
-
-
-
-
-
-
-
-
-

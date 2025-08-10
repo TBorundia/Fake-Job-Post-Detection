@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import html2canvas from 'html2canvas';
