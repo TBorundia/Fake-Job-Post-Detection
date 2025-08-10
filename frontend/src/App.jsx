@@ -161,7 +161,7 @@ export default function App() {
   }, [theme]);
 
   useEffect(() => {
-    fetch("http://localhost:5003/api/me", {
+    fetch("https://adminbackendoftrap.onrender.com/api/me", {
       credentials: "include"
     })
       .then(res => res.json())
@@ -179,7 +179,7 @@ export default function App() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5003/api/logout", {
+      await fetch("https://adminbackendoftrap.onrender.com/api/logout", {
         method: "POST",
         credentials: "include"
       });

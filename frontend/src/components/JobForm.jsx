@@ -382,7 +382,7 @@ const JobForm = ({ setJobData, setLoading, setError }) => {
     });
 
     // Then send to your Node.js backend for storage
-    await axios.post("http://localhost:5003/api/analyze-job", {
+    await axios.post("https://adminbackendoftrap.onrender.com/api/analyze-job", {
       url: url || null,
       jobPost: jobPost || null,
       platform: platform || null,

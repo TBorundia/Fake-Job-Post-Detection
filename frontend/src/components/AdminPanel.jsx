@@ -25,7 +25,7 @@ export default function AdminPanel({ handleLogout }) {
     const fetchData = async () => {
       try {
         const apiUrl = import.meta.env.DEV 
-          ? 'http://localhost:5003/api' 
+          ? 'https://adminbackendoftrap.onrender.com/api' 
           : '/api';
 
         const [usersRes, jobsRes] = await Promise.all([
@@ -128,7 +128,7 @@ export default function AdminPanel({ handleLogout }) {
   // Delete user
   const handleDeleteUser = async (userId) => {
     try {
-      await axios.delete(`http://localhost:5003/api/admin/users/${userId}`, {
+      await axios.delete(`https://adminbackendoftrap.onrender.com/api/admin/users/${userId}`, {
         withCredentials: true
       });
       setUsers(users.filter(user => user._id !== userId));
@@ -148,7 +148,7 @@ export default function AdminPanel({ handleLogout }) {
       setUsers(updatedUsers);
       
       await axios.put(
-        `http://localhost:5003/api/admin/users/${userId}/toggle-admin`,
+        `https://adminbackendoftrap.onrender.com/api/admin/users/${userId}/toggle-admin`,
         {},
         { withCredentials: true }
       );

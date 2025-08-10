@@ -325,7 +325,7 @@ export default function Login({ setUser }) {
           throw new Error("Passwords don't match");
         }
 
-        const res = await fetch("http://localhost:5003/api/register", {
+        const res = await fetch("https://adminbackendoftrap.onrender.com/api/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form)
@@ -343,7 +343,7 @@ export default function Login({ setUser }) {
         setError(""); // Clear any previous errors
       } else {
         // login
-        const res = await fetch("http://localhost:5003/api/login", {
+        const res = await fetch("https://adminbackendoftrap.onrender.com/api/login", {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
